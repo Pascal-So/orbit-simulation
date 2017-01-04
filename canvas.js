@@ -18,9 +18,14 @@ function lerpPoint(a, b, frac){ // expects point objects
 	return new Point(lerp(a.x, b.x, frac), lerp(a.y, b.y, frac));
 }
 
-function drawPixel(ctx, pt){
-	ctx.fillRect(pt.x, pt.y, 1, 1);
+function lerpComplex(a, b, frac){
+	return new Complex(lerp(a.re, b.re, frac), lerp(a.im, b.im, frac));	
 }
+
+function drawPixel(ctx, pt, size){
+	ctx.fillRect(pt.x - size/2, pt.y - size/2, size, size);
+}
+
 
 function sandline(ctx, a, b){
 	var res = diff(a, b).length() / 10;
@@ -31,8 +36,16 @@ function sandline(ctx, a, b){
 	}
 }
 
+function complexToPoint(c, scale, width, height){
+	var x = c.re * width/scale + width/2;
+	var y = -c.im * height/scale + height/2;
+
+	return new Point(x, y);
+}
+
 
 function main(){
+
 	var c = document.getElementById('canvas');
 	if (c.getContext){
 		var ctx = c.getContext("2d");
@@ -57,12 +70,13 @@ function main(){
 			ctx.globalCompositeOperation = "souce-over";
 			ctx.fillStyle = "black";
 			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.2;
+	        ctx.globalAlpha = 0.5;
 
 	        A = new Point(w/3, h/2);
 	        B = new Point(w/3*2, h/2);
 
-		    interval = window.setInterval(draw, 10, ctx, w, h);
+		    //interval = window.setInterval(draw, 10, ctx, w, h);
+		    drawComplex(ctx, w, h);
 	    }
 	    resizeCanvas();
 
@@ -70,6 +84,38 @@ function main(){
 		console.log("Browser not supported.");
 	}
 }
+
+
+function drawComplex(ctx, width, height){
+	var a = new Complex(0.3, 0.4);
+	var b = a.square();
+	console.log(b);
+
+	var ap = complexToPoint(a, 1, width, height);
+	console.log(ap);
+
+	drawPixel(ctx, ap, 3);
+
+	drawPixel(ctx, complexToPoint(b, 1, width, height), 3);
+
+	var loga = a.log();
+	var logb = b.log();
+
+	var res = 40;
+	for(var i = 0; i < res; i++){
+		var frac = i/res;
+		var lc = lerpComplex(loga, logb, frac).exp();
+		drawPixel(ctx, complexToPoint(lc, 1, width, height), 2);
+	}
+}
+
+
+
+
+
+
+
+
 
 var A, B;
 
@@ -92,3 +138,5 @@ function release(ev){
 	var kc = ev.keyCode;
 	//console.log(kc, "released");;
 }
+
+
