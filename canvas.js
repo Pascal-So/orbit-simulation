@@ -70,7 +70,7 @@ function main(){
 			ctx.globalCompositeOperation = "souce-over";
 			ctx.fillStyle = "black";
 			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.1;
+	        ctx.globalAlpha = 0.5;
 
 	        A = new Point(w/3, h/2);
 	        B = new Point(w/3*2, h/2);
@@ -85,9 +85,27 @@ function main(){
 	}
 }
 
+function dC(ctx, c, width, height){
+	drawPixel(ctx, complexToPoint(c, 2, width, height), 2);
+}
+
+function squareTrail(ctx, c, width, height){
+	var d = c.square();
+
+	var logc = c.log();
+	var logd = d.log();
+	logd.im += Math.PI *2;
+
+	var res = 50;
+	for(var i = 0; i < res; i++){
+		var frac = i/res;
+		var lc = lerpComplex(logc, logd, frac).exp();
+		dC(ctx, lc, width, height);
+	}
+}
 
 function drawComplex(ctx, width, height){
-	var offset = new Complex(0.3, 0.4409);
+	/*var offset = new Complex(0.3, 0.4409);
 	var cPoints = [new Complex(0.3, 0.5)];
 	for(var i = 0; i < 5000; i++){
 		var newCPoint = cPoints[cPoints.length - 1].square();	
@@ -103,21 +121,15 @@ function drawComplex(ctx, width, height){
 		if(i < cPoints.length-1){
 			sandline(ctx, complexToPoint(elem, 2, width, height), complexToPoint(cPoints[i+1], 2, width, height));
 		}
-	}
-
-
-
-	/*var res = 40;
-	for(var i = 0; i < res; i++){
-		var frac = i/res;
-		var lc = lerpComplex(loga, logb, frac).exp();
-		drawPixel(ctx, complexToPoint(lc, 1, width, height), 2);
-	}
-	for(var i = 0; i < res; i++){
-		var frac = i/res;
-		var lc = lerpComplex(logb, logc, frac).exp();
-		drawPixel(ctx, complexToPoint(lc, 1, width, height), 2);
 	}*/
+
+	var a = new Complex(0.4, 0.3);
+	
+	for(var i = 0; i < 10; i++){
+		var c = new Complex(Math.random()-0.5, Math.random()-0.5);
+		squareTrail(ctx, c, width, height);
+	}
+
 }
 
 
