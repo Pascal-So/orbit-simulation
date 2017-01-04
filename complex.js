@@ -2,6 +2,9 @@ function Complex(re, im){
 	this.re = re;
 	this.im = im;
 	
+	this.add = function(c){
+		return new Complex(this.re + c.re, this.im + c.im);
+	}
 	this.scale = function(fac){
 		return new Complex(this.re*fac, this.im*fac);
 	}

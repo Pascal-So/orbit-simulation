@@ -87,26 +87,33 @@ function main(){
 
 
 function drawComplex(ctx, width, height){
-	var a = new Complex(0.3, 0.4);
-	var b = a.square();
-	console.log(b);
+	var offset = new Complex(0.3, 0.4409);
+	var cPoints = [new Complex(0.3, 0.5)];
+	for(var i = 0; i < 10000; i++){
+		var newCPoint = cPoints[cPoints.length - 1].square();	
+		cPoints.push(newCPoint.add(offset));
+	}
+	
 
-	var ap = complexToPoint(a, 1, width, height);
-	console.log(ap);
+	for(var i = 0; i < cPoints.length; i++){
+		var elem = cPoints[i];
+		//console.log(elem);
+		drawPixel(ctx, complexToPoint(elem, 2, width, height), 1);
+	}
 
-	drawPixel(ctx, ap, 3);
 
-	drawPixel(ctx, complexToPoint(b, 1, width, height), 3);
 
-	var loga = a.log();
-	var logb = b.log();
-
-	var res = 40;
+	/*var res = 40;
 	for(var i = 0; i < res; i++){
 		var frac = i/res;
 		var lc = lerpComplex(loga, logb, frac).exp();
 		drawPixel(ctx, complexToPoint(lc, 1, width, height), 2);
 	}
+	for(var i = 0; i < res; i++){
+		var frac = i/res;
+		var lc = lerpComplex(logb, logc, frac).exp();
+		drawPixel(ctx, complexToPoint(lc, 1, width, height), 2);
+	}*/
 }
 
 
