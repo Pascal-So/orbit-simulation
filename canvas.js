@@ -28,11 +28,11 @@ function drawPixel(ctx, pt, size){
 
 
 function sandline(ctx, a, b){
-	var res = diff(a, b).length() / 10;
+	var res = diff(a, b).length() / 5;
 	for(var i = 0; i < res; ++i){
 		var frac = Math.random();
 		drawpoint = lerpPoint(a, b, frac);
-		drawPixel(ctx, drawpoint);
+		drawPixel(ctx, drawpoint, 1);
 	}
 }
 
@@ -70,7 +70,7 @@ function main(){
 			ctx.globalCompositeOperation = "souce-over";
 			ctx.fillStyle = "black";
 			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.5;
+	        ctx.globalAlpha = 0.1;
 
 	        A = new Point(w/3, h/2);
 	        B = new Point(w/3*2, h/2);
@@ -89,7 +89,7 @@ function main(){
 function drawComplex(ctx, width, height){
 	var offset = new Complex(0.3, 0.4409);
 	var cPoints = [new Complex(0.3, 0.5)];
-	for(var i = 0; i < 10000; i++){
+	for(var i = 0; i < 5000; i++){
 		var newCPoint = cPoints[cPoints.length - 1].square();	
 		cPoints.push(newCPoint.add(offset));
 	}
@@ -99,6 +99,10 @@ function drawComplex(ctx, width, height){
 		var elem = cPoints[i];
 		//console.log(elem);
 		drawPixel(ctx, complexToPoint(elem, 2, width, height), 1);
+
+		if(i < cPoints.length-1){
+			sandline(ctx, complexToPoint(elem, 2, width, height), complexToPoint(cPoints[i+1], 2, width, height));
+		}
 	}
 
 
