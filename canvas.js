@@ -67,7 +67,7 @@ function main(){
 }
 
 function dC(ctx, c, width, height){
-	drawPixel(ctx, c.toPoint(width/2), 2);
+	drawPixel(ctx, c.toPoint(width/3), 2);
 }
 
 function squareTrail(ctx, c, width, height){
@@ -93,17 +93,47 @@ function squareTrail(ctx, c, width, height){
 }
 
 function drawIters(ctx, c, width, height){
-	var iters = 50000;
-	var offset = new PolComplex(0.7, 2.6);
-
+	var iters = 5000;
+	var offset = c;//new PolComplex(0.26, 0);
+	c = c.square().add(offset);
 	for(var i = 0; i < iters; i++){
-		dC(ctx, c, width, height);
 		c = c.square().add(offset);
+		dC(ctx, c, width, height);
+		
 		if(c.r > 4){
 			break;
 		}
 	}
 }
+
+function timeToEscape(c){
+	var iters = 4000;
+	var offset = c;
+	c = c.square().add(offset);
+	for(var i = 0; i < iters; i++){
+		c = c.square().add(offset);
+		if(c.r > 4){
+			return i;
+		}
+	}
+	return iters;
+}
+
+function mandelbrotPoint(ctx, c, width, height){
+	var tte = timeToEscape(c);
+	ctx.globalAlpha = 1-tte/70;
+	dC(ctx, c, width, height);
+	//console.log(~~c.r, ~~c.t);
+}
+
+function mandelbrot(ctx, width, height){
+	for(var r = 0.7; r < 1.5; r+=0.002){
+		for(var t = 2.7; t < 3.6; t+=0.002){
+			mandelbrotPoint(ctx, new PolComplex(r, t), width, height);
+		}
+	}
+}
+
 
 function drawComplex(ctx, width, height){
 	/*var offset = new Complex(0.3, 0.4409);
@@ -126,11 +156,14 @@ function drawComplex(ctx, width, height){
 
 	var a = new Complex(0.4, 0.3);
 	
-	for(var i = 0; i < 600; i++){
-		var c = new PolComplex(Math.random(), Math.random()*6.283);
-		squareTrail(ctx, c, width, height);
+	/*for(var i = 0; i < 6000; i++){
+		var c = new PolComplex(Math.random()*2, Math.random()*6.283);
+		//squareTrail(ctx, c, width, height);
 		//drawIters(ctx, c, width, height);
-	}
+		
+
+	}*/
+	mandelbrot(ctx, width, height);
 
 }
 
