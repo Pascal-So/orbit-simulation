@@ -49,7 +49,7 @@ function main(){
 			ctx.globalCompositeOperation = "souce-over";
 			ctx.fillStyle = "black";
 			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.2;
+	        ctx.globalAlpha = 0.1;
 	        ctx.translate(w/2, h/2);
 
 
@@ -71,15 +71,20 @@ function dC(ctx, c, width, height){
 }
 
 function squareTrail(ctx, c, width, height){
+	var offset = new PolComplex(0.7, 2.6);
+	c = c.square().add(offset);
+	c = c.square().add(offset);
+
+
 	var d = c.square();
 
 	var logc = c.log();
 	var logd = d.log();
-	logd.im += Math.PI *2;
+	//logd.im += Math.PI *2;
 
-	var offset = new PolComplex(0.3, 2);
+	
 
-	var res = 100;
+	var res = 1000;
 	for(var i = 0; i < res; i++){
 		var frac = i/res;
 		var lc = lerpComplex(logc, logd, frac).exp().add(offset.scale(i/res));
@@ -121,10 +126,10 @@ function drawComplex(ctx, width, height){
 
 	var a = new Complex(0.4, 0.3);
 	
-	for(var i = 0; i < 2000; i++){
+	for(var i = 0; i < 600; i++){
 		var c = new PolComplex(Math.random(), Math.random()*6.283);
-		//squareTrail(ctx, c, width, height);
-		drawIters(ctx, c, width, height);
+		squareTrail(ctx, c, width, height);
+		//drawIters(ctx, c, width, height);
 	}
 
 }
