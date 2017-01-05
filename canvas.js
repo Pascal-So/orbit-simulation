@@ -1,26 +1,11 @@
-function Point(x, y){
-	this.x = x;
-	this.y = y;
-	this.length = function(){
-		return Math.sqrt(this.x*this.x + this.y*this.y);
-	}
-}
-
-function diff(a, b){
-	return new Point(b.x-a.x, b.y-a.y);
-}
 
 function lerp(a, b, frac){
 	return a*(1-frac) + b*frac;
 }
 
-function lerpPoint(a, b, frac){ // expects point objects
-	return new Point(lerp(a.x, b.x, frac), lerp(a.y, b.y, frac));
-}
 
-function lerpComplex(a, b, frac){
-	return new Complex(lerp(a.re, b.re, frac), lerp(a.im, b.im, frac));	
-}
+
+
 
 function drawPixel(ctx, pt, size){
 	ctx.fillRect(pt.x - size/2, pt.y - size/2, size, size);
@@ -28,7 +13,7 @@ function drawPixel(ctx, pt, size){
 
 
 function sandline(ctx, a, b){
-	var res = diff(a, b).length() / 5;
+	var res = a.sub(b).length() / 5;
 	for(var i = 0; i < res; ++i){
 		var frac = Math.random();
 		drawpoint = lerpPoint(a, b, frac);
@@ -36,12 +21,6 @@ function sandline(ctx, a, b){
 	}
 }
 
-function complexToPoint(c, scale, width, height){
-	var x = c.re * width/scale + width/2;
-	var y = -c.im * height/scale + height/2;
-
-	return new Point(x, y);
-}
 
 
 function main(){
@@ -70,7 +49,9 @@ function main(){
 			ctx.globalCompositeOperation = "souce-over";
 			ctx.fillStyle = "black";
 			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.5;
+	        ctx.globalAlpha = 0.2;
+	        ctx.translate(w/2, h/2);
+
 
 	        A = new Point(w/3, h/2);
 	        B = new Point(w/3*2, h/2);
@@ -86,7 +67,7 @@ function main(){
 }
 
 function dC(ctx, c, width, height){
-	drawPixel(ctx, complexToPoint(c, 2, width, height), 2);
+	drawPixel(ctx, c.toPoint(width/2), 2);
 }
 
 function squareTrail(ctx, c, width, height){
@@ -96,11 +77,26 @@ function squareTrail(ctx, c, width, height){
 	var logd = d.log();
 	logd.im += Math.PI *2;
 
-	var res = 50;
+	var offset = new PolComplex(0.3, 2);
+
+	var res = 100;
 	for(var i = 0; i < res; i++){
 		var frac = i/res;
-		var lc = lerpComplex(logc, logd, frac).exp();
+		var lc = lerpComplex(logc, logd, frac).exp().add(offset.scale(i/res));
 		dC(ctx, lc, width, height);
+	}
+}
+
+function drawIters(ctx, c, width, height){
+	var iters = 50000;
+	var offset = new PolComplex(0.7, 2.6);
+
+	for(var i = 0; i < iters; i++){
+		dC(ctx, c, width, height);
+		c = c.square().add(offset);
+		if(c.r > 4){
+			break;
+		}
 	}
 }
 
@@ -125,9 +121,10 @@ function drawComplex(ctx, width, height){
 
 	var a = new Complex(0.4, 0.3);
 	
-	for(var i = 0; i < 10; i++){
-		var c = new Complex(Math.random()-0.5, Math.random()-0.5);
-		squareTrail(ctx, c, width, height);
+	for(var i = 0; i < 2000; i++){
+		var c = new PolComplex(Math.random(), Math.random()*6.283);
+		//squareTrail(ctx, c, width, height);
+		drawIters(ctx, c, width, height);
 	}
 
 }

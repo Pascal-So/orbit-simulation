@@ -27,14 +27,17 @@ function PolComplex(r, t){
 		var re = Math.log(this.r); // real and imaginary part of exponent
 		var im = this.t;
 
-		var mag = Math.sqrt(re*re + im*im);
-		var ang = Math.atan2(im, re);
-		return new PolComplex(mag, ang);
+		// note that log of a polar complex returns a cartesian complex
+		return new Complex(re, im);
 	}
-	this.exp = function(){
-		var im = Math.sin(this.t) * this.r; // real and imaginary part of exponent
-		var re = Math.cos(this.t) * this.r;
+	this.toCartesian = function(){
+		var re = this.r * Math.cos(this.t);
+		var im = this.r * Math.sin(this.t);
 
-		return new PolComplex(Math.exp(re), im);
+		return new Complex(re, im);
 	}
+	this.toPoint = function(scale){
+		return this.toCartesian().toPoint(scale);
+	}
+
 }

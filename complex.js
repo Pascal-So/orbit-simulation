@@ -1,3 +1,5 @@
+// complex number in the form a + bi, as opposed to polar coordinates
+
 function Complex(re, im){
 	this.re = re;
 	this.im = im;
@@ -17,13 +19,21 @@ function Complex(re, im){
 	this.angle = function(){
 		return Math.atan2(this.im, this.re);
 	}
-	this.log = function(){
-		var ang = this.angle();
-		var mag = this.magnitude();
-		return new Complex(Math.log(mag), ang);
-	}
 	this.exp = function(){
-		var circ = new Complex(Math.cos(this.im), Math.sin(this.im));
-		return circ.scale(Math.exp(this.re));
+		var r = Math.exp(this.re);
+		var t = this.im;
+
+		// note that exp of a cartesian complex returns a polar complex
+		return new PolComplex(r, t);
 	}
+	this.toPoint = function(scale){
+		var x = this.re * scale;
+		var y = this.im * scale;
+
+		return new Point(x, y);
+	}
+}
+
+function lerpComplex(a, b, frac){
+	return new Complex(lerp(a.re, b.re, frac), lerp(a.im, b.im, frac));	
 }
