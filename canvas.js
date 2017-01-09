@@ -107,7 +107,7 @@ function drawIters(ctx, c, width, height){
 }
 
 function timeToEscape(c){
-	var iters = 4000;
+	var iters = 400;
 	var offset = c;
 	c = c.square().add(offset);
 	for(var i = 0; i < iters; i++){
@@ -121,15 +121,15 @@ function timeToEscape(c){
 
 function mandelbrotPoint(ctx, c, width, height){
 	var tte = timeToEscape(c);
-	ctx.globalAlpha = 1-tte/70;
+
+	ctx.globalAlpha = Math.max(0, 1-tte/65);
 	dC(ctx, c, width, height);
-	//console.log(~~c.r, ~~c.t);
 }
 
 function mandelbrot(ctx, width, height){
-	for(var r = 0.7; r < 1.5; r+=0.002){
-		for(var t = 2.7; t < 3.6; t+=0.002){
-			mandelbrotPoint(ctx, new PolComplex(r, t), width, height);
+	for(var x = -1.5; x < 1.5; x += 0.005){
+		for(var y = -0.8; y < 0.8; y+=0.005){
+			mandelbrotPoint(ctx, new Complex(x, y).toPolar(), width, height);
 		}
 	}
 }

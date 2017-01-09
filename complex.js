@@ -32,6 +32,12 @@ function Complex(re, im){
 
 		return new Point(x, y);
 	}
+	this.toPolar = function(){
+		var r = this.magnitude();
+		var t = this.angle();
+
+		return new PolComplex(r, t);
+	}
 }
 
 function lerpComplex(a, b, frac){
