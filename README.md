@@ -15,3 +15,7 @@ Traces of one iteration on a Julia Set from multiple starting points
 ![Mandelbrot with aliasing glitches](glitchMandelbrot.png)
 
 Aliasing glitches in a mandelbrot
+
+![Draggin a point along a random path](drag.png)
+
+Dragging a point along a random path. The path of the point in front is shown, along with the connection between the two points.
