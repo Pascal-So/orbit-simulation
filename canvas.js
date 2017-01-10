@@ -12,8 +12,10 @@ function drawPixel(ctx, pt, size){
 }
 
 
-function sandline(ctx, a, b){
-	var res = 5;//a.sub(b).length() / 5;
+function sandline(ctx, a, b, res){
+	if(res == -1){
+		res = a.sub(b).length() / 5;
+	}
 	for(var i = 0; i < res; ++i){
 		var frac = Math.random();
 		drawpoint = lerpPoint(a, b, frac);
@@ -82,17 +84,17 @@ var A, Last, V;
 var Drag;
 
 function draw(ctx, width, height){
-	V = V.add(random_move(0.9)).scale(0.98);
+	V = V.add(random_move(0.9)).scale(0.985);
 	var center = new Point(width/2, height/2);
 	V = V.add(center.sub(A).scale(0.00001));
 	console.log(V);
 	A = A.add(V);
-	sandline(ctx, Last, A);
+	sandline(ctx, Last, A, 5);
 	Last = A;
 
-	Drag = Drag.add(A.sub(Drag).scale(0.01));
+	Drag = Drag.add(A.sub(Drag).scale(0.008));
 
-	sandline(ctx, Drag, A);
+	sandline(ctx, Drag, A, -1);
 	
 }
 
