@@ -14,7 +14,7 @@ function drawPixel(ctx, pt, size){
 
 function sandline(ctx, a, b, res){
 	if(res == -1){
-		res = a.sub(b).length() / 5;
+		res = a.sub(b).magnitude() / 5;
 	}
 	for(var i = 0; i < res; ++i){
 		var frac = Math.random();
@@ -41,6 +41,8 @@ function main(){
 	    	if(interval){
 	    		clearInterval(interval);
 	    	}
+
+	    	planetSim(false, ctx, 0,0); // stop planets
 	    	
 	    	w = window.innerWidth;
 	    	h = window.innerHeight;
@@ -51,7 +53,7 @@ function main(){
 			ctx.globalCompositeOperation = "souce-over";
 			ctx.fillStyle = "black";
 			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.1;
+	        ctx.globalAlpha = 0.2;
 	        //ctx.translate(w/2, h/2);
 
 
@@ -61,8 +63,10 @@ function main(){
 	        Drag = A;
 	        Drag.x+=20;
 
-		    interval = window.setInterval(draw, 1, ctx, w, h);
+		    //interval = window.setInterval(draw, 1, ctx, w, h);
 		    //drawComplex(ctx, w, h);
+		    planetSim(true, ctx, w, h); // start planets
+
 	    }
 	    resizeCanvas();
 
