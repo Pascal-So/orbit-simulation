@@ -45,8 +45,6 @@ function main(){
 	    	if(interval){
 	    		clearInterval(interval);
 	    	}
-
-	    	planetSim(false, ctx, 0,0); // stop planets
 	    	
 	    	w = window.innerWidth;
 	    	h = window.innerHeight;
@@ -57,7 +55,7 @@ function main(){
 			ctx.globalCompositeOperation = "souce-over";
 			ctx.fillStyle = "black";
 			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.06;
+	        ctx.globalAlpha = 0.07;
 	        //ctx.translate(w/2, h/2);
 
 
@@ -69,8 +67,11 @@ function main(){
 
 		    //interval = window.setInterval(draw, 1, ctx, w, h);
 		    //drawComplex(ctx, w, h);
+		   	
+		    ctx.globalAlpha = 0.07;
+		    pretty_lines(ctx, w, h);
+		    ctx.globalAlpha = 0.1;
 		    planetSim(true, ctx, w, h); // start planets
-
 
 	    }
 	    resizeCanvas();
