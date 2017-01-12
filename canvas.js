@@ -12,6 +12,8 @@ function drawPixel(ctx, pt, size){
 }
 
 
+
+
 function sandline(ctx, a, b, res){
 	if(res == -1){
 		res = a.sub(b).magnitude() / 2;
@@ -68,6 +70,7 @@ function main(){
 		    //interval = window.setInterval(draw, 1, ctx, w, h);
 		    //drawComplex(ctx, w, h);
 		    planetSim(true, ctx, w, h); // start planets
+
 
 	    }
 	    resizeCanvas();

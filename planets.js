@@ -1,10 +1,4 @@
 function planetSim(run, ctx, width, height){
-	var timer;
-	if(run === false){
-		clearInterval(timer);
-		return;
-	}
-
 
 	// [Point] -> [Point] -> [Point]
 	function mAdd(p1, p2){
@@ -95,27 +89,7 @@ function planetSim(run, ctx, width, height){
 		return {pos: newPos, vel: newVel};
 	}
 
-	// [Point] -> Double -> Double -> Double -> [Point]
-	function toScreenSpace(positions, radius_visible, width, height){
-		var scale = Math.min(width, height)/2/radius_visible;
-		var center = new Point(width/2, height/2);
-
-		var out = positions.map(function(p){
-			return p.scale(scale).add(center);
-		});
-		return out;
-	}
 	
-	// Context -> [Point] -> Double -> Double -> IO()
-	function drawPlanets(ctx, positions, width, height){
-		var screenSpace = toScreenSpace(positions, 10, width, height);
-
-		sandline(ctx, screenSpace[1], screenSpace[2], 100);
-
-		screenSpace.map(function(p){
-			drawPixel(ctx, p, 1);
-		});
-	}
 	*/
 
 	// Int -> Double -> Double -> Double -> (changes: `positions`, `velocities`, `masses`)
@@ -129,13 +103,51 @@ function planetSim(run, ctx, width, height){
 
 	// [Point] -> Bool
 	function stopConditionReached(positions){
-		var n = positions.length;
+		var n = 3;//positions.length;
 		for(var i = 0; i < n; i++){
 			if(positions[i].sqmag() > 400){
 				return true;
 			}
 		}
 		return false;
+	}
+
+	// [Point] -> Double -> Double -> Double -> [Point]
+	function toScreenSpace(positions, radius_visible, width, height){
+		var scale = Math.min(width, height)/2/radius_visible;
+		var center = new Point(width/2, height/2);
+
+		var out = positions.map(function(p){
+			return p.scale(scale).add(center);
+		});
+		return out;
+	}
+	
+	function weightedSandline(ctx, a, b, res){
+		if(res == -1){
+			res = a.sub(b).magnitude() / 2;
+		}
+		for(var i = 0; i < res; ++i){
+			var frac = Math.random();
+			frac = 1-frac*frac;
+			drawpoint = lerpPoint(a, b, frac);
+			//drawpoint.x = Math.floor(drawpoint.x); // uncomment this to disable AA
+			//drawpoint.y = Math.floor(drawpoint.y);
+			drawPixel(ctx, drawpoint, 1);
+		}
+	}
+
+	// Context -> [Point] -> Double -> Double -> IO()
+	function drawPlanets(ctx, positions, width, height){
+		var screenSpace = toScreenSpace(positions, 10, width, height);
+
+		sandline(ctx, screenSpace[4], screenSpace[3], 10);
+
+
+
+		screenSpace.slice(2).map(function(p){
+			drawPixel(ctx, p, 1);
+		});
 	}
 
 	// [Point] -> (changes: `stored`)
@@ -153,7 +165,7 @@ function planetSim(run, ctx, width, height){
 		var newState = rungeKutta(positions, velocities, masses);
 		positions = newState.pos;
 		velocities = newState.vel;
-		//drawPlanets(ctx, positions, width, height);
+		drawPlanets(ctx, positions, width, height);
 		storePlanetPositions(positions);
 	}
 
@@ -167,22 +179,21 @@ function planetSim(run, ctx, width, height){
 	var G = 10;
 	var DT = 0.0002;
 
+	var NR_PLANETS = 8;
+
 	var running = true;
 	while (running){
 		stored = [];
 		running = false;
-		initVals(6, 20, 60, 160);
+		initVals(NR_PLANETS, 20, 60, 160);
 
 		masses[0] = 500;
 		positions[0] = new Point(0, 0);
 		velocities[0] = new Point(0, 0);
 
-
 		masses[1] = 3;
 		positions[1] = new Point(10, 0);
 		velocities[1] = new Point(0, 10.02);
-
-		//timer = setInterval(tick, 1, ctx, width, height);
 
 		for(var i = 0; i < 5000; i ++){
 			tick(ctx, width, height);
@@ -192,7 +203,6 @@ function planetSim(run, ctx, width, height){
 					running = true;
 				} // otherwise, use up to this point.
 
-				
 				break;
 			}
 		}
@@ -291,7 +301,6 @@ function planetSim(run, ctx, width, height){
 			sandline(ctx, a, b, 300);
 		}
 	}
-
 
 	var box = boxPadding(getBoundingBox(stored), 0.1);
 	var windowCoords = boxToWindowCoords(box, width, height, stored);
