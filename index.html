@@ -58,6 +58,9 @@
 
 		var log_ob = document.getElementById("messages");
 		log_ob.innerHTML += "<p>" + message + "</p>";
+
+		var message_scroll_frame = log_ob.parentElement;
+		message_scroll_frame.scrollTop = message_scroll_frame.scrollHeight;
 	}
 
 	
@@ -84,11 +87,16 @@
 		var draw_background_lines_input = document.getElementById("draw_background_lines");
 
 		var nr_planets = parseInt(nr_planets_input.value);
-		var background_orbits = background_orbits_input.value;
-		var background_area_shading = background_area_shading_input.value;
+		var background_orbits = background_orbits_input.checked;
+		var background_area_shading = background_area_shading_input.checked;
 		var shading_resolution = parseInt(shading_resolution_input.value);
-		var draw_background_lines = draw_background_lines_input.value;
+		var draw_background_lines = draw_background_lines_input.checked;
 		
+		if(background_area_shading && nr_planets <= 4){
+			log("Warning: Background shading only available for Nr. of Planets > 4");
+		}
+
+
 		// clear canvas
 		ctx.clearRect(0, 0, canvas_width, canvas_height);
 
