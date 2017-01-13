@@ -54,7 +54,7 @@
 	}
 
 	function log(message){
-		console.log("Log message:", message);
+		//console.log("Log message:", message);
 
 		var log_ob = document.getElementById("messages");
 		log_ob.innerHTML += "<p>" + message + "</p>";
@@ -103,8 +103,10 @@
 		// render
 
 		if(draw_background_lines){
+			ctx.globalAlpha = 0.04;
 			background_lines(ctx, canvas_width, canvas_height);
 		}
+		ctx.globalAlpha = 0.07;
 		planetSim(c, ctx, canvas_width, canvas_height, nr_planets, background_orbits, background_area_shading, shading_resolution);
 		
 	}
@@ -117,7 +119,7 @@
 			font-size: 16px;
 			text-align: center;
 			color: #ddd;
-			background-color: #323232;
+			background-color: #272727;
 		}
 		h1, h2{
 			margin-top: 2px;
@@ -163,7 +165,7 @@
 		}
 
 		.button{
-			background-color: #222;
+			background-color: #181818;
 			//border: 1px solid #ccc;
 			text-align: center;
 			margin: auto;
@@ -223,6 +225,63 @@
 <canvas id="canvas">
 	Your browser does not support the canvas tag, please stop using IE 8.
 </canvas>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 </body>
 </html>
