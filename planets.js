@@ -1,4 +1,4 @@
-function planetSim(ctx, width, height, nr_planets, background_orbits, background_area_shading, shading_resolution){
+function planetSim(canvas, ctx, width, height, nr_planets, background_orbits, background_area_shading, shading_resolution){
 
 	// [Point] -> [Point] -> [Point]
 	function mAdd(p1, p2){
@@ -172,47 +172,10 @@ function planetSim(ctx, width, height, nr_planets, background_orbits, background
 		storePlanetPositions(positions);
 	}
 
-	// [[Point]]
-	var stored = [];
+	
 
-	var positions = [];
-	var velocities = [];
-	var masses = [];
 
-	var G = 10;
-	var DT = 0.0002;
-
-	var NR_PLANETS = Math.max(3, parseInt(nr_planets));
-
-	var running = true;
-	while (running){
-		stored = [];
-		running = false;
-		initVals(NR_PLANETS, 20, 60, 160);
-
-		masses[0] = 500;
-		positions[0] = new Point(0, 0);
-		velocities[0] = new Point(0, 0);
-
-		masses[1] = 3;
-		positions[1] = new Point(10, 0);
-		velocities[1] = new Point(0, 10.02);
-
-		for(var i = 0; i < 5000; i ++){
-			tick(ctx, width, height);
-			if(stopConditionReached(positions)){
-				if(i < 1000){
-					// restart simulation
-					running = true;
-				} // otherwise, use up to this point.
-
-				break;
-			}
-		}
-	}
-
-	console.log("Simulation done");
-
+	
 	function getBoundingBox(stored){
 		var min_x = 100, max_x = -100, min_y = 100, max_y = -100;
 
@@ -305,9 +268,70 @@ function planetSim(ctx, width, height, nr_planets, background_orbits, background
 		}
 	}
 
-	var box = boxPadding(getBoundingBox(stored), 0.1);
-	var windowCoords = boxToWindowCoords(box, width, height, stored);
-	drawStored(ctx, windowCoords);
 
-	console.log("done");
+
+
+	function runSimulation(){
+		stored = [];
+		running = false;
+		initVals(NR_PLANETS, 20, 60, 160);
+
+		masses[0] = 500;
+		positions[0] = new Point(0, 0);
+		velocities[0] = new Point(0, 0);
+
+		masses[1] = 3;
+		positions[1] = new Point(10, 0);
+		velocities[1] = new Point(0, 10.02);
+
+		for(var i = 0; i < 7000; i ++){
+			tick(ctx, width, height);
+			if(stopConditionReached(positions)){
+				if(i < 2000){
+					// restart simulation
+					running = true;
+					log("Detected unstable orbit, changing velocities");
+
+				} // otherwise, use up to this point.
+
+				break;
+			}
+		}
+
+		if(running){
+			// need this recursive hack, otherwise the messages don't show up.
+			setTimeout(runSimulation, 20);
+		}else{
+			log("Simulation done, start processing");
+			setTimeout(processing, 20);
+		}
+	}
+
+	function processing(){
+		var box = boxPadding(getBoundingBox(stored), 0.1);
+		var windowCoords = boxToWindowCoords(box, width, height, stored);
+		drawStored(ctx, windowCoords);
+		log("Rendering done");
+		canvas.style.display = "block";
+
+		setTimeout(function(){rendering = false;}, 50);
+	}
+
+
+	// [[Point]]
+	var stored = [];
+
+	var positions = [];
+	var velocities = [];
+	var masses = [];
+
+	var G = 10;
+	var DT = 0.0002;
+
+	var NR_PLANETS = Math.max(3, parseInt(nr_planets));
+
+	var running = true;
+
+	setTimeout(runSimulation, 20);
+	
 }

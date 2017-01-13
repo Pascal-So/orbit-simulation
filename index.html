@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+	<meta charset="UTF-8">
 	<title>Orbit Simulation</title>
 
 	<script type="text/javascript" src="planets.js"></script>
@@ -10,6 +12,7 @@
 	<script type="text/javascript">
 	
 
+	var c;
 	var ctx;
 	var canvas_width;
 	var canvas_height;
@@ -22,7 +25,7 @@
 		bt_render = document.getElementById("bt_render");
 
 		// get canvas
-		var c = document.getElementById("canvas");
+		c = document.getElementById("canvas");
 		if(c.getContext){
 			ctx = c.getContext("2d");
 		}else{
@@ -43,7 +46,7 @@
 
         //ctx.lineWidth = 1;
 		ctx.globalCompositeOperation = "souce-over";
-		ctx.fillStyle = "black";
+		ctx.fillStyle = "white";
 		//ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
         ctx.globalAlpha = 0.07;
 
@@ -52,6 +55,9 @@
 
 	function log(message){
 		console.log("Log message:", message);
+
+		var log_ob = document.getElementById("messages");
+		log_ob.innerHTML += "<p>" + message + "</p>";
 	}
 
 	
@@ -65,6 +71,10 @@
 		rendering = true;
 
 		log("Rendering..");
+		c.style.display = "none";
+
+		
+
 
 		// get info
 		var nr_planets_input = document.getElementById("nr_planets");
@@ -87,12 +97,7 @@
 		if(draw_background_lines){
 			background_lines(ctx, canvas_width, canvas_height);
 		}
-		planetSim(ctx, canvas_width, canvas_height, nr_planets, background_orbits, background_area_shading, shading_resolution);
-		
-		log("Done");
-		bt_render.innerHTML = "Render";
-
-		setTimeout(function(){rendering = false;}, 50);
+		planetSim(c, ctx, canvas_width, canvas_height, nr_planets, background_orbits, background_area_shading, shading_resolution);
 		
 	}
 		
@@ -100,22 +105,32 @@
 
 	<style type="text/css">
 		body{
-			font-family: Helvetica, sans-serif, sans;
-			padding: 50px 0;
+			font-family: mono, Helvetica, sans-serif, sans;
+			font-size: 16px;
 			text-align: center;
+			color: #ddd;
+			background-color: #323232;
+		}
+		h1, h2{
+			margin-top: 2px;
+			font-weight: 100;
+		}
+		a{
+			color: #bbb;
+		}
+		a:hover{
+			color: white;
 		}
 		label{
 			display: inline-block;
 			width: 200px;
-			text-align: right;
-			margin-right: 1em;
+			//text-align: right;
+			margin-right: 5px;
 		}
 		form div + div{
 			margin-top: 1em;
 		}
 		form{
-			width: 300px;
-			margin: auto;
 			text-align: left;
 		}
 		input[type="number"]{
@@ -123,22 +138,41 @@
 			margin: 4px;
 		}
 
+		.card-content{
+			width: 320px;
+			text-align: left;
+		}
+
+		.card{
+			vertical-align: top;
+			padding: 20px;
+			border-radius: 10px;
+			border: 1px solid #777;
+			display: inline-block;
+			margin: 5px;
+			height: 320px;
+			overflow-y: auto;
+		}
+
 		.button{
-			background-color: #eee;
-			border: 1px solid #ccc;
+			background-color: #222;
+			//border: 1px solid #ccc;
 			text-align: center;
-			margin: 40px auto;
+			margin: auto;
+			margin-top: 20px;
+
 			width: 140px;
 			padding: 10px;
 		}
+
 		.button:hover{
 			cursor: pointer;
-			background-color: #ccc;
+			background-color: #111;
 		}
 
 		canvas{
-			border: 1px solid black;
-			display: block;
+			//border: 1px solid #444;
+			display: none;
 			margin: auto;
 		}
 	</style>
@@ -146,20 +180,38 @@
 </head>
 <body onload="setTimeout(main, 5);">
 
+<div class="card">
+	<h1>Orbit Simulation</h1>
+	<div class="card-content">
+		
+		<p>Reminiscent of the line seg&shy;ment in Jo&shy;han&shy;nes Kep&shy;ler's second law of plan&shy;e&shy;tary mo&shy;tion, this sim&shy;u&shy;la&shy;tion traces out the area swept out by the con&shy;nect&shy;ing line seg&shy;ment be&shy;tween two plan&shy;ets.</p>
+		<p>Codėlis, 2017<br><a href="http://twitter.com/sommerpascal">@SommerPascal</a></p>
+	</div>
+</div>
 
-<form>
-	<div><label for="nr_planets">Nr. of Planets: </label><input type="number" id="nr_planets" value="8"></div>
+<div class="card">
+	<h2>Settings</h2>
+	<form>
+		<div><label for="nr_planets">Nr. of Planets: </label><input type="number" id="nr_planets" value="8"></div>
 
-	<div><label for="background_orbits">Background orbits: </label><input type="checkbox" id="background_orbits" checked></div>
+		<div><label for="background_orbits">Background orbits: </label><input type="checkbox" id="background_orbits" checked></div>
 
-	<div><label for="background_area_shading">Background area shading: </label><input type="checkbox" id="background_area_shading" checked></div>
+		<div><label for="background_area_shading">Background area shading: </label><input type="checkbox" id="background_area_shading" checked></div>
 
-	<div><label for="shading_resolution">Shading resolution: </label><input type="number" id="shading_resolution" value="300"></div>
+		<div><label for="shading_resolution">Shading resolution: </label><input type="number" id="shading_resolution" value="300"></div>
 
-	<div><label for="draw_background_lines">Background lines: </label><input type="checkbox" id="draw_background_lines" checked></div>
-</form>
-<div class="button" id="bt_render" onclick="bt_render.innerHTML = 'Rendering...'; setTimeout(render, 10);">Render</div>
-<p id="messages"></p>
+		<div><label for="draw_background_lines">Background lines: </label><input type="checkbox" id="draw_background_lines" checked></div>
+	</form>
+	<div class="button" id="bt_render" onclick="render();">Render</div>
+</div>
+
+<div class="card">
+	<h2>Messages</h2>
+	<div class="card-content" id="messages">
+
+	</div>
+</div>
+
 <canvas id="canvas">
 	Your browser does not support the canvas tag, please stop using IE 8.
 </canvas>
