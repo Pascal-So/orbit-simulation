@@ -1,5 +1,4 @@
-function pretty_lines(ctx, width, height){
-	console.log("pretty_lines");
+function background_lines(ctx, width, height){
 
 	var x_step = 80;
 	var y_step = x_step;

@@ -1,4 +1,4 @@
-function planetSim(run, ctx, width, height){
+function planetSim(ctx, width, height, nr_planets, background_orbits, background_area_shading, shading_resolution){
 
 	// [Point] -> [Point] -> [Point]
 	function mAdd(p1, p2){
@@ -141,13 +141,16 @@ function planetSim(run, ctx, width, height){
 	function drawPlanets(ctx, positions, width, height){
 		var screenSpace = toScreenSpace(positions, 10, width, height);
 
-		sandline(ctx, screenSpace[4], screenSpace[3], 10);
 
+		if(background_area_shading && NR_PLANETS > 4){
+			weightedSandline(ctx, screenSpace[4], screenSpace[3], shading_resolution/20);
+		}
 
-
-		screenSpace.slice(2).map(function(p){
-			drawPixel(ctx, p, 1);
-		});
+		if(background_orbits){
+			screenSpace.slice(2).map(function(p){
+				drawPixel(ctx, p, 1);
+			});
+		}
 	}
 
 	// [Point] -> (changes: `stored`)
@@ -179,7 +182,7 @@ function planetSim(run, ctx, width, height){
 	var G = 10;
 	var DT = 0.0002;
 
-	var NR_PLANETS = 8;
+	var NR_PLANETS = Math.max(3, parseInt(nr_planets));
 
 	var running = true;
 	while (running){
@@ -298,7 +301,7 @@ function planetSim(run, ctx, width, height){
 		for(var i = 0; i < n; i ++){
 			var a = windowCoordsStored[i][0];
 			var b = windowCoordsStored[i][1];
-			sandline(ctx, a, b, 300);
+			weightedSandline(ctx, a, b, shading_resolution);
 		}
 	}
 

@@ -33,3 +33,10 @@ function Point(x, y){
 function lerpPoint(a, b, frac){ // expects point objects
 	return new Point(lerp(a.x, b.x, frac), lerp(a.y, b.y, frac));
 }
+
+function random_move(dist){
+	var hd = dist/2;
+	var dx = Math.random()*hd - Math.random()*hd;
+	var dy = Math.random()*hd - Math.random()*hd;
+	return new Point(dx, dy);
+}

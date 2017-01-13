@@ -12,8 +12,6 @@ function drawPixel(ctx, pt, size){
 }
 
 
-
-
 function sandline(ctx, a, b, res){
 	if(res == -1){
 		res = a.sub(b).magnitude() / 2;
@@ -27,94 +25,3 @@ function sandline(ctx, a, b, res){
 	}
 }
 
-
-
-function main(){
-
-	var c = document.getElementById('canvas');
-	if (c.getContext){
-		var ctx = c.getContext("2d");
-		
-
-
-		window.addEventListener('resize', resizeCanvas, false);
-
-		var interval;
-
-	    function resizeCanvas() {
-	    	if(interval){
-	    		clearInterval(interval);
-	    	}
-	    	
-	    	w = window.innerWidth;
-	    	h = window.innerHeight;
-	        c.width = w;
-	        c.height = h;
-
-	        ctx.lineWidth = 1;
-			ctx.globalCompositeOperation = "souce-over";
-			ctx.fillStyle = "black";
-			ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
-	        ctx.globalAlpha = 0.07;
-	        //ctx.translate(w/2, h/2);
-
-
-	        A = new Point(w/2, h/2);
-	        Last = A;
-	        V = new Point(0, 0);
-	        Drag = A;
-	        Drag.x+=20;
-
-		    //interval = window.setInterval(draw, 1, ctx, w, h);
-		    //drawComplex(ctx, w, h);
-		   	
-		    ctx.globalAlpha = 0.07;
-		    pretty_lines(ctx, w, h);
-		    ctx.globalAlpha = 0.1;
-		    planetSim(true, ctx, w, h); // start planets
-
-	    }
-	    resizeCanvas();
-
-	}else{
-		console.log("Browser not supported.");
-	}
-}
-
-
-function random_move(dist){
-	var hd = dist/2;
-	var dx = Math.random()*hd - Math.random()*hd;
-	var dy = Math.random()*hd - Math.random()*hd;
-	return new Point(dx, dy);
-}
-
-var A, Last, V;
-
-var Drag;
-
-function draw(ctx, width, height){
-	V = V.add(random_move(0.9)).scale(0.985);
-	var center = new Point(width/2, height/2);
-	V = V.add(center.sub(A).scale(0.00001));
-	console.log(V);
-	A = A.add(V);
-	sandline(ctx, Last, A, 5);
-	Last = A;
-
-	Drag = Drag.add(A.sub(Drag).scale(0.008));
-
-	sandline(ctx, Drag, A, -1);
-	
-}
-
-
-function press(ev){
-	var kc = ev.keyCode;
-	//console.log(kc, "pressed");
-}
-
-function release(ev){
-	var kc = ev.keyCode;
-	//console.log(kc, "released");;
-}

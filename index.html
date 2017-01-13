@@ -1,27 +1,168 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Canvas test</title>
-	<script type="text/javascript" src="complex.js"></script>
-	<script type="text/javascript" src="polComplex.js"></script>
-	<script type="text/javascript" src="point.js"></script>
-	<script type="text/javascript" src="planets.js"></script>
-	<script type="text/javascript" src="pretty_lines.js"></script>
+	<title>Orbit Simulation</title>
 
+	<script type="text/javascript" src="planets.js"></script>
+	<script type="text/javascript" src="point.js"></script>
+	<script type="text/javascript" src="background_lines.js"></script>
 	<script type="text/javascript" src="canvas.js"></script>
+	<script type="text/javascript">
+	
+
+	var ctx;
+	var canvas_width;
+	var canvas_height;
+
+	var bt_render;
+
+	var rendering = true;
+
+	function main(){
+		bt_render = document.getElementById("bt_render");
+
+		// get canvas
+		var c = document.getElementById("canvas");
+		if(c.getContext){
+			ctx = c.getContext("2d");
+		}else{
+			alert("Your browser is not supported. Please stop using IE 8.");
+			return;
+		}
+
+		var window_width = window.innerWidth;
+
+		canvas_width = window_width - 100;
+		canvas_height = canvas_width/16*9;
+
+		c.style.width = canvas_width.toString() + "px";
+		c.style.height = canvas_height.toString() + "px";
+
+		c.width = canvas_width;
+        c.height = canvas_height;
+
+        //ctx.lineWidth = 1;
+		ctx.globalCompositeOperation = "souce-over";
+		ctx.fillStyle = "black";
+		//ctx.strokeStyle = "rgba(10, 10, 10, 0.2)";
+        ctx.globalAlpha = 0.07;
+
+        rendering = false;
+	}
+
+	function log(message){
+		console.log("Log message:", message);
+	}
+
+	
+
+	function render(){
+
+		if(rendering){
+			return;
+		}
+
+		rendering = true;
+
+		log("Rendering..");
+
+		// get info
+		var nr_planets_input = document.getElementById("nr_planets");
+		var background_orbits_input = document.getElementById("background_orbits");
+		var background_area_shading_input = document.getElementById("background_area_shading");
+		var shading_resolution_input = document.getElementById("shading_resolution");
+		var draw_background_lines_input = document.getElementById("draw_background_lines");
+
+		var nr_planets = parseInt(nr_planets_input.value);
+		var background_orbits = background_orbits_input.value;
+		var background_area_shading = background_area_shading_input.value;
+		var shading_resolution = parseInt(shading_resolution_input.value);
+		var draw_background_lines = draw_background_lines_input.value;
+		
+		// clear canvas
+		ctx.clearRect(0, 0, canvas_width, canvas_height);
+
+		// render
+
+		if(draw_background_lines){
+			background_lines(ctx, canvas_width, canvas_height);
+		}
+		planetSim(ctx, canvas_width, canvas_height, nr_planets, background_orbits, background_area_shading, shading_resolution);
+		
+		log("Done");
+		bt_render.innerHTML = "Render";
+
+		setTimeout(function(){rendering = false;}, 50);
+		
+	}
+		
+	</script>
 
 	<style type="text/css">
-		html, body, canvas{
-			margin: 0;
-			padding: 0;
+		body{
+			font-family: Helvetica, sans-serif, sans;
+			padding: 50px 0;
+			text-align: center;
 		}
+		label{
+			display: inline-block;
+			width: 200px;
+			text-align: right;
+			margin-right: 1em;
+		}
+		form div + div{
+			margin-top: 1em;
+		}
+		form{
+			width: 300px;
+			margin: auto;
+			text-align: left;
+		}
+		input[type="number"]{
+			width: 70px;
+			margin: 4px;
+		}
+
+		.button{
+			background-color: #eee;
+			border: 1px solid #ccc;
+			text-align: center;
+			margin: 40px auto;
+			width: 140px;
+			padding: 10px;
+		}
+		.button:hover{
+			cursor: pointer;
+			background-color: #ccc;
+		}
+
 		canvas{
-			width: 100%;
-			height: 100%;
+			border: 1px solid black;
+			display: block;
+			margin: auto;
 		}
 	</style>
+
 </head>
-<body onload="setTimeout(main, 10);" onkeydown="press(event);" onkeyup="release(event);">
-<canvas id="canvas" ></canvas>
+<body onload="setTimeout(main, 5);">
+
+
+<form>
+	<div><label for="nr_planets">Nr. of Planets: </label><input type="number" id="nr_planets" value="8"></div>
+
+	<div><label for="background_orbits">Background orbits: </label><input type="checkbox" id="background_orbits" checked></div>
+
+	<div><label for="background_area_shading">Background area shading: </label><input type="checkbox" id="background_area_shading" checked></div>
+
+	<div><label for="shading_resolution">Shading resolution: </label><input type="number" id="shading_resolution" value="300"></div>
+
+	<div><label for="draw_background_lines">Background lines: </label><input type="checkbox" id="draw_background_lines" checked></div>
+</form>
+<div class="button" id="bt_render" onclick="bt_render.innerHTML = 'Rendering...'; setTimeout(render, 10);">Render</div>
+<p id="messages"></p>
+<canvas id="canvas">
+	Your browser does not support the canvas tag, please stop using IE 8.
+</canvas>
+
 </body>
 </html>
